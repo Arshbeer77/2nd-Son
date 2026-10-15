@@ -80,6 +80,17 @@ static uint64_t __attribute__((sysv_abi)) guest_tsc_frequency(void) {
 }
 #include "files.h"
 #include "playgo.h"
+static int32_t __attribute__((sysv_abi)) guest_system_service_param_get_int(int32_t param_id, int32_t *value) {
+    if (!value) return (int32_t)0x80A10003;
+    if (param_id == 1) {
+        *value = 1;
+        printf("HOST: sceSystemServiceParamGetInt(Lang) -> 1\n"); fflush(stdout);
+        restore_guest_fs();
+        return 0;
+    }
+    fprintf(stderr, "STOP: unsupported sceSystemServiceParamGetInt param_id=%d\n", param_id);
+    fflush(stderr); ExitProcess(20);
+}
 static uintptr_t probe_resolve(const char *name, uint64_t kind) {
     if (kind==1 && !strcmp(name,"g8cM39EUZ6o#A#B")) return (uintptr_t)guest_sysmodule_load;
     if (kind==1 && !strcmp(name,"ts6GlZOKRrE#a#b")) return (uintptr_t)guest_playgo_initialize;
@@ -87,6 +98,8 @@ static uintptr_t probe_resolve(const char *name, uint64_t kind) {
     if (kind==1 && !strcmp(name,"Uco1I0dlDi8#a#b")) return (uintptr_t)guest_playgo_close;
     if (kind==1 && !strcmp(name,"LosLlHOpNqQ#a#b")) return (uintptr_t)guest_playgo_language;
     if (kind==1 && !strcmp(name,"MPe0EeBGM-E#a#b")) return (uintptr_t)guest_playgo_terminate;
+    if (kind==1 && !strcmp(name,"uWIYLFkkwqk#a#b")) return (uintptr_t)guest_playgo_get_locus;
+    if (kind==1 && !strcmp(name,"fZo48un7LK4#U#V")) return (uintptr_t)guest_system_service_param_get_int;
     if (kind==1 && !strcmp(name,"UK2Tl2DWUns#b#T")) return (uintptr_t)guest_close;
     if (kind==1 && !strcmp(name,"Cg4srZ6TKbU#b#T")) return (uintptr_t)guest_read;
     if (kind==1 && !strcmp(name,"oib76F-12fk#b#T")) return (uintptr_t)guest_lseek;

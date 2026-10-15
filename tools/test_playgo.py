@@ -48,6 +48,12 @@ int main(int argc,char **argv) {
     CHECK(guest_playgo_open(NULL,NULL)==PG_ERROR(10));
     CHECK(guest_playgo_open(&h,buffer)==PG_ERROR(4) && h==99);
     CHECK(guest_playgo_open(&h,NULL)==0 && h==1);
+    uint16_t id0=0, id1=1; int8_t locus=-1;
+    CHECK(guest_playgo_get_locus(2,&id0,1,&locus)==PG_ERROR(9));
+    CHECK(guest_playgo_get_locus(1,NULL,1,&locus)==PG_ERROR(10));
+    CHECK(guest_playgo_get_locus(1,&id0,0,&locus)==PG_ERROR(4));
+    CHECK(guest_playgo_get_locus(1,&id1,1,&locus)==PG_ERROR(12));
+    CHECK(guest_playgo_get_locus(1,&id0,1,&locus)==0 && locus==0);
     CHECK(guest_playgo_language(2,7)==PG_ERROR(9));
     CHECK(guest_playgo_language(1,7)==0 && playgo_language_mask==7);
     CHECK(guest_playgo_close(1)==0);

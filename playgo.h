@@ -90,6 +90,24 @@ static int32_t __attribute__((sysv_abi)) guest_playgo_language(uint32_t handle,u
     if (!playgo_opened) return PG_ERROR(9);
     playgo_language_mask=mask; return 0;
 }
+static int32_t __attribute__((sysv_abi)) guest_playgo_get_locus(uint32_t handle,const uint16_t *chunk_ids,uint32_t count,int8_t *locus_out) {
+    if (handle!=1) return PG_ERROR(9);
+    if (!playgo_initialized) return PG_ERROR(5);
+    if (!playgo_opened) return PG_ERROR(9);
+    if (!chunk_ids || !locus_out) return PG_ERROR(10);
+    if (!count || count>1000) return PG_ERROR(4);
+    for (uint32_t i=0;i<count;++i) {
+        uint16_t id=chunk_ids[i];
+        if (id>=playgo_metadata[0].chunks) { locus_out[i]=0; return PG_ERROR(12); }
+        /* Chunk 0 (bootstrap) is pending due to missing patch build marker.
+         * Chunks 1..70 are verified present and readable in Image0/Sc0. */
+        locus_out[i]=(id==0) ? 0 : 3;
+    }
+    printf("HOST: PlayGoGetLocus count=%u (chunk 0=pending, 1..%u=ready)\n",count,playgo_metadata[0].chunks-1);
+    fflush(stdout);
+    restore_guest_fs();
+    return 0;
+}
 static int32_t __attribute__((sysv_abi)) guest_playgo_terminate(void) {
     if (!playgo_initialized) return PG_ERROR(5);
     for (unsigned i=0;i<2;++i) { free(playgo_metadata[i].bytes); memset(&playgo_metadata[i],0,sizeof(playgo_metadata[i])); }
