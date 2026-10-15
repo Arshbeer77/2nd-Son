@@ -19,6 +19,13 @@ def span(data, offset, size):
     return data[offset:offset + size]
 
 
+def entry_excerpt(image, entry, limit=1024):
+    """Diagnostic bytes at the ELF virtual entry in the mapped image."""
+    if not 0 <= entry < len(image) or limit <= 0:
+        raise ValueError('entry excerpt outside mapped image')
+    return bytes(image[entry:entry + limit])
+
+
 def unpack(fmt, data, offset):
     return struct.unpack(fmt, span(data, offset, struct.calcsize(fmt)))
 
@@ -220,7 +227,7 @@ def prepare(game, out):
             f.write(struct.pack('<QQqq', *relocation))
         f.write(image)
     (out / 'eboot.elf').write_bytes(elf)
-    (out / 'entry.bin').write_bytes(image[:1024])
+    (out / 'entry.bin').write_bytes(entry_excerpt(image, header[4]))
     resources = collections.Counter()
     total_bytes = 0
     for path in (game / 'dvdroot_ps4').rglob('*'):

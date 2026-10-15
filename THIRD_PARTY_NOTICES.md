@@ -39,3 +39,13 @@ Inspected snapshot: `7295d120b61c499cb309521ff1f5b898c5d62051`.
 `import_names.inc` contains API-name/NID diagnostic mappings, not executable game bytes. The optional CSV matcher verifies symbol-name hashes but does not establish runtime compatibility or ABI correctness. A user's external symbol database is not included.
 
 The plaintext SELF/ELF preparation implementation and its BBPROBE image format are inherited from the Bloodborne reference above. GNU toolchains, Python and Node.js are external prerequisites and are not redistributed. Synthetic tests create their own minimal machine code from the assembly text visible in the test sources.
+
+## PlayGo lifecycle and metadata
+
+playgo.h uses ABI/error/layout contracts from the GPL-2.0-or-later shadPS4 project (Copyright 2024-2026 shadPS4 Emulator Project), inspected 2026-10-15 at the following primary sources:
+
+- https://github.com/shadps4-emu/shadPS4/blob/main/src/core/libraries/playgo/playgo.cpp
+- https://github.com/shadps4-emu/shadPS4/blob/main/src/core/libraries/playgo/playgo_types.h
+- https://github.com/shadps4-emu/shadPS4/blob/main/src/core/file_format/playgo_chunk.h
+
+These are current-main references, not pinned native SDK contracts. This runtime's Windows metadata reader, structural validation and scoped lifecycle state are implemented locally. It does not adopt upstream's all-installed availability/progress policy. Binary observations and ordinary runtime diagnostics corroborate the target's Initialize/Open call shape and metadata counts; no REA session was used.

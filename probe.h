@@ -79,7 +79,14 @@ static uint64_t __attribute__((sysv_abi)) guest_tsc_frequency(void) {
     return hz;
 }
 #include "files.h"
+#include "playgo.h"
 static uintptr_t probe_resolve(const char *name, uint64_t kind) {
+    if (kind==1 && !strcmp(name,"g8cM39EUZ6o#A#B")) return (uintptr_t)guest_sysmodule_load;
+    if (kind==1 && !strcmp(name,"ts6GlZOKRrE#a#b")) return (uintptr_t)guest_playgo_initialize;
+    if (kind==1 && !strcmp(name,"M1Gma1ocrGE#a#b")) return (uintptr_t)guest_playgo_open;
+    if (kind==1 && !strcmp(name,"Uco1I0dlDi8#a#b")) return (uintptr_t)guest_playgo_close;
+    if (kind==1 && !strcmp(name,"LosLlHOpNqQ#a#b")) return (uintptr_t)guest_playgo_language;
+    if (kind==1 && !strcmp(name,"MPe0EeBGM-E#a#b")) return (uintptr_t)guest_playgo_terminate;
     if (kind==1 && !strcmp(name,"UK2Tl2DWUns#b#T")) return (uintptr_t)guest_close;
     if (kind==1 && !strcmp(name,"Cg4srZ6TKbU#b#T")) return (uintptr_t)guest_read;
     if (kind==1 && !strcmp(name,"oib76F-12fk#b#T")) return (uintptr_t)guest_lseek;
